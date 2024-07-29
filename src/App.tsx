@@ -31,17 +31,13 @@ function App() {
 
   return (
     <Router>
-      <div className="flex">
-        <Sidebar sidebarToggle={sidebarToggle} />
-        <div
-          className={`${
-            sidebarToggle ? "ml-16" : "ml-64"
-          } w-full transition-all duration-300 ease-in-out`}
-        >
-          <Navbar
-            sidebarToggle={sidebarToggle}
-            setSidebarToggle={setSidebarToggle}
-          />
+      <div className={`w-full transition-all duration-300 ease-in-out`}>
+        <Navbar
+          sidebarToggle={sidebarToggle}
+          setSidebarToggle={setSidebarToggle}
+        />
+        <div className="flex">
+          <Sidebar sidebarToggle={sidebarToggle} />
           <Routes>
             <Route
               path="/"

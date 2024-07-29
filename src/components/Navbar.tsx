@@ -1,4 +1,5 @@
-import React from "react";
+// navbar.tsx
+import React, { useState } from "react";
 import { FaBars, FaUserCircle, FaSearch } from "react-icons/fa";
 
 interface NavbarProps {
@@ -7,8 +8,10 @@ interface NavbarProps {
 }
 
 const Navbar: React.FC<NavbarProps> = ({ sidebarToggle, setSidebarToggle }) => {
+  const [searchVisible, setSearchVisible] = useState(false);
+
   return (
-    <nav className={"bg-gray-800 px-4 py-3 flex justify-between"}>
+    <nav className="bg-gray-900 px-4 py-3 flex justify-between">
       <div className="flex items-center text-xl">
         <FaBars
           className="text-white me-4 cursor-pointer"
@@ -19,16 +22,42 @@ const Navbar: React.FC<NavbarProps> = ({ sidebarToggle, setSidebarToggle }) => {
 
       <div className="flex items-center gap-x-5">
         <div className="relative md:w-65">
-          <span className="relative md:absolute inset-y-0 left-0 flex items-center pl-2">
-            <button className="p-1 focus:outline-none text-white md:text-black">
-              <FaSearch />
-            </button>
-          </span>
-          <input
-            type="text"
-            className="w-full px-4 py-1 pl-12 rounded shadow outline-none hidden md:block"
-          />
+          {/* Show search icon when sidebar is collapsed or search input is hidden */}
+          {sidebarToggle ? (
+            <span className="relative">
+              <button
+                className="p-1 focus:outline-none text-white md:text-black"
+                onClick={() => setSearchVisible(true)} // Show input when icon is clicked
+              >
+                <FaSearch />
+              </button>
+            </span>
+          ) : (
+            <>
+              {/* Show search input when sidebar is open */}
+              <span className="relative md:absolute inset-y-0 left-0 flex items-center pl-2">
+                <FaSearch className="text-white md:text-black" />
+              </span>
+              <input
+                type="text"
+                className="w-full px-4 py-1 pl-12 rounded shadow outline-none"
+                placeholder="Search..."
+              />
+            </>
+          )}
+
+          {/* Show input field if it is visible */}
+          {searchVisible && (
+            <input
+              type="text"
+              className="w-full px-4 py-1 pl-12 rounded shadow outline-none"
+              placeholder="Search..."
+              autoFocus
+              onBlur={() => setSearchVisible(false)} // Hide input when it loses focus
+            />
+          )}
         </div>
+
         <div className="relative">
           <button className="text-white group">
             <FaUserCircle className="w-6 h-6 mt-1" />
