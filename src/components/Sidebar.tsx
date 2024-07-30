@@ -19,7 +19,7 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarToggle }) => {
     >
       <ul className="mt-3 text-white font-bold">
         <li
-          className={`mb-2 rounded hover:shadow md:hover:bg-blue-500 py-2 flex items-center ${
+          className={`mb-2 rounded hover:shadow py-2 flex items-center ${
             location.pathname === "/" && "active"
           }`}
         >
@@ -29,7 +29,7 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarToggle }) => {
           </Link>
         </li>
         <li
-          className={`mb-2 rounded hover:shadow md:hover:bg-blue-500 py-2 flex items-center ${
+          className={`mb-2 rounded hover:shadow py-2 flex items-center ${
             location.pathname === "/login" && "active"
           }`}
         >
@@ -39,7 +39,7 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarToggle }) => {
           </Link>
         </li>
         <li
-          className={`mb-2 rounded hover:shadow md:hover:bg-blue-500 py-2 flex items-center ${
+          className={`mb-2 rounded hover:shadow py-2 flex items-center ${
             location.pathname === "/about" && "active"
           }`}
         >
