@@ -48,8 +48,24 @@ function App() {
                 />
               }
             />
-            <Route path="/about" element={<AboutComponent />} />
-            <Route path="/login" element={<LoginComponent />} />
+            <Route
+              path="/about"
+              element={
+                <AboutComponent
+                  sidebarToggle={sidebarToggle}
+                  setSidebarToggle={setSidebarToggle}
+                />
+              }
+            />
+            <Route
+              path="/login"
+              element={
+                <LoginComponent
+                  sidebarToggle={sidebarToggle}
+                  setSidebarToggle={setSidebarToggle}
+                />
+              }
+            />
           </Routes>
         </div>
       </div>
