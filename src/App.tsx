@@ -1,4 +1,3 @@
-// App.tsx
 import React, { useState, useEffect } from "react";
 import "./App.css";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
@@ -7,6 +6,7 @@ import Dashboard from "./components/Dashboard";
 import AboutComponent from "./components/AboutComponent";
 import LoginComponent from "./components/LoginComponent";
 import Navbar from "./components/Navbar";
+import Footer from "./components/Footer"; // Import Footer component
 
 function App() {
   const [sidebarToggle, setSidebarToggle] = useState(false);
@@ -31,43 +31,50 @@ function App() {
 
   return (
     <Router>
-      <div className={`w-full transition-all duration-300 ease-in-out`}>
+      <div className="flex flex-col min-h-screen">
         <Navbar
           sidebarToggle={sidebarToggle}
           setSidebarToggle={setSidebarToggle}
         />
-        <div className="flex">
+        <div className="flex flex-1">
           <Sidebar sidebarToggle={sidebarToggle} />
-          <Routes>
-            <Route
-              path="/"
-              element={
-                <Dashboard
-                  sidebarToggle={sidebarToggle}
-                  setSidebarToggle={setSidebarToggle}
-                />
-              }
-            />
-            <Route
-              path="/about"
-              element={
-                <AboutComponent
-                  sidebarToggle={sidebarToggle}
-                  setSidebarToggle={setSidebarToggle}
-                />
-              }
-            />
-            <Route
-              path="/login"
-              element={
-                <LoginComponent
-                  sidebarToggle={sidebarToggle}
-                  setSidebarToggle={setSidebarToggle}
-                />
-              }
-            />
-          </Routes>
+          <div
+            className={`flex-1 ml-${
+              sidebarToggle ? "16" : "64"
+            } transition-all duration-300`}
+          >
+            <Routes>
+              <Route
+                path="/"
+                element={
+                  <Dashboard
+                    sidebarToggle={sidebarToggle}
+                    setSidebarToggle={setSidebarToggle}
+                  />
+                }
+              />
+              <Route
+                path="/about"
+                element={
+                  <AboutComponent
+                    sidebarToggle={sidebarToggle}
+                    setSidebarToggle={setSidebarToggle}
+                  />
+                }
+              />
+              <Route
+                path="/login"
+                element={
+                  <LoginComponent
+                    sidebarToggle={sidebarToggle}
+                    setSidebarToggle={setSidebarToggle}
+                  />
+                }
+              />
+            </Routes>
+          </div>
         </div>
+        <Footer />
       </div>
     </Router>
   );

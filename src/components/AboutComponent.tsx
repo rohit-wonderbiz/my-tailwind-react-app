@@ -10,13 +10,13 @@ const AboutComponent: React.FC<NavbarProps> = ({
   setSidebarToggle,
 }) => {
   return (
-    <h1
+    <div
       className={`${
         sidebarToggle ? "ml-16" : "ml-64"
-      } w-full transition-all duration-300 ease-in-out`}
+      } flex-1 flex items-center justify-center transition-all duration-300 ease-in-out min-h-screen`}
     >
-      This is my About Page
-    </h1>
+      <h1>This is my About Page</h1>
+    </div>
   );
 };
 

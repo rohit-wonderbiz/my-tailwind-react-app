@@ -1,4 +1,3 @@
-// sidebar.tsx
 import React from "react";
 import { FaHome, FaInfoCircle } from "react-icons/fa";
 import { FiLogIn } from "react-icons/fi";
@@ -13,7 +12,7 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarToggle }) => {
   const location = useLocation();
   return (
     <div
-      className={`fixed h-full transition-all duration-300 ease-in-out ${
+      className={`absolute h-full transition-all duration-300 ease-in-out ${
         sidebarToggle ? "w-16" : "w-64"
       } bg-gray-800 px-2 py-2`}
     >
