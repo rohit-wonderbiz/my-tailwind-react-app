@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 interface NavbarProps {
   sidebarToggle: boolean;
@@ -21,6 +21,7 @@ const LoginComponent: React.FC<NavbarProps> = ({
     education: "",
     languages: "",
   });
+  const [showPopup, setShowPopup] = useState(false);
 
   const validateForm = () => {
     let formErrors = {
@@ -62,6 +63,8 @@ const LoginComponent: React.FC<NavbarProps> = ({
     if (validateForm()) {
       alert("Form submitted successfully!");
       console.log(name, gender, email, education, languages);
+    } else {
+      setShowPopup(true);
     }
   };
 
@@ -72,6 +75,26 @@ const LoginComponent: React.FC<NavbarProps> = ({
         ? prevLanguages.filter((language) => language !== value)
         : [...prevLanguages, value]
     );
+  };
+
+  const validateName = () => {
+    if (!name) {
+      setErrors((prevErrors) => ({ ...prevErrors, name: "Name is required." }));
+    } else {
+      setErrors((prevErrors) => ({ ...prevErrors, name: "" }));
+    }
+  };
+
+  const validateEmail = () => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!email || !emailRegex.test(email)) {
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        email: "Invalid email address.",
+      }));
+    } else {
+      setErrors((prevErrors) => ({ ...prevErrors, email: "" }));
+    }
   };
 
   const getInputBorderColor = (fieldValue: string, fieldError: string) => {
@@ -86,11 +109,11 @@ const LoginComponent: React.FC<NavbarProps> = ({
         sidebarToggle ? "ml-16" : "ml-32"
       } mr-16 flex-1 flex items-center justify-center transition-all duration-300 ease-in-out min-h-screen`}
     >
-      <form
-        className="w-full max-w-sm"
-        onSubmit={handleSubmit}
-        autoComplete="off"
-      >
+      <form className="w-full" onSubmit={handleSubmit} autoComplete="off">
+        <h1 className="text-center p-8 text-2xl font-bold text-blue-600 sm:text-3xl">
+          Employee Form
+        </h1>
+
         <div className="mb-4">
           <label
             className="block text-gray-700 text-sm font-bold mb-2"
@@ -103,7 +126,11 @@ const LoginComponent: React.FC<NavbarProps> = ({
             id="name"
             placeholder="Enter your Name"
             value={name}
-            onChange={(e) => setName(e.target.value)}
+            onChange={(e) => {
+              setName(e.target.value);
+              validateName();
+            }}
+            onBlur={validateName}
             className={`shadow appearance-none border ${getInputBorderColor(
               name,
               errors.name
@@ -125,7 +152,11 @@ const LoginComponent: React.FC<NavbarProps> = ({
             id="email"
             placeholder="Enter your Email"
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={(e) => {
+              setEmail(e.target.value);
+              validateEmail();
+            }}
+            onBlur={validateEmail}
             className={`shadow appearance-none border ${getInputBorderColor(
               email,
               errors.email
@@ -139,29 +170,40 @@ const LoginComponent: React.FC<NavbarProps> = ({
           <label className="block text-gray-700 text-sm font-bold mb-2">
             Gender
           </label>
-          <div>
-            <label className="mr-4">
-              <input
-                type="radio"
-                name="gender"
-                value="male"
-                checked={gender === "male"}
-                onChange={(e) => setGender(e.target.value)}
-                className="mr-2"
-              />
-              Male
-            </label>
-            <label>
-              <input
-                type="radio"
-                name="gender"
-                value="female"
-                checked={gender === "female"}
-                onChange={(e) => setGender(e.target.value)}
-                className="mr-2"
-              />
-              Female
-            </label>
+          <div className="grid grid-cols-1 gap-4 text-center sm:grid-cols-3">
+            <div>
+              <label
+                className="block w-full cursor-pointer shadow rounded-lg border p-3 text-gray-800 hover:border-gray-800 has-[:checked]:border-blue-600 has-[:checked]:bg-blue-600 has-[:checked]:text-white"
+                tabIndex={0}
+              >
+                <input
+                  className="sr-only"
+                  type="radio"
+                  name="gender"
+                  value="male"
+                  checked={gender === "male"}
+                  onChange={(e) => setGender(e.target.value)}
+                />
+                <span className="text-sm"> Male </span>
+              </label>
+            </div>
+
+            <div>
+              <label
+                className="block w-full cursor-pointer shadow rounded-lg border p-3 text-gray-800 hover:border-gray-800 has-[:checked]:border-blue-600 has-[:checked]:bg-blue-600 has-[:checked]:text-white"
+                tabIndex={0}
+              >
+                <input
+                  className="sr-only"
+                  type="radio"
+                  name="gender"
+                  value="female"
+                  checked={gender === "female"}
+                  onChange={(e) => setGender(e.target.value)}
+                />
+                <span className="text-sm"> Female </span>
+              </label>
+            </div>
           </div>
           {errors.gender && (
             <p className="text-red-500 text-xs mt-2">{errors.gender}</p>
@@ -234,15 +276,47 @@ const LoginComponent: React.FC<NavbarProps> = ({
             <p className="text-red-500 text-xs mt-2">{errors.languages}</p>
           )}
         </div>
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-center">
           <button
             type="submit"
-            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+            className="bg-blue-700 hover:bg-blue-900 text-white font-bold py-3 px-8 rounded focus:outline-none focus:shadow-outline"
           >
             Submit
           </button>
         </div>
       </form>
+
+      {showPopup && (
+        <aside className="fixed top-4 right-4 z-50 flex items-center justify-center gap-4 rounded-lg bg-red-600 px-5 py-3 text-white">
+          <a
+            href="#"
+            target="_blank"
+            rel="noreferrer"
+            className="text-sm font-medium hover:opacity-75"
+          >
+            All fields need to be filled
+          </a>
+
+          <button
+            className="rounded bg-white/20 p-1 hover:bg-white/10"
+            onClick={() => setShowPopup(false)}
+          >
+            <span className="sr-only">Close</span>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-4 w-4"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+            >
+              <path
+                fillRule="evenodd"
+                d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                clipRule="evenodd"
+              />
+            </svg>
+          </button>
+        </aside>
+      )}
     </div>
   );
 };
