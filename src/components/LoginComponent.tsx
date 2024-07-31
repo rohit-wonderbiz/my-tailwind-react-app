@@ -61,6 +61,7 @@ const LoginComponent: React.FC<NavbarProps> = ({
     event.preventDefault();
     if (validateForm()) {
       alert("Form submitted successfully!");
+      console.log(name, gender, email, education, languages);
     }
   };
 
@@ -82,10 +83,14 @@ const LoginComponent: React.FC<NavbarProps> = ({
   return (
     <div
       className={`${
-        sidebarToggle ? "ml-16" : "ml-64"
-      } flex-1 flex items-center justify-center transition-all duration-300 ease-in-out min-h-screen`}
+        sidebarToggle ? "ml-16" : "ml-32"
+      } mr-16 flex-1 flex items-center justify-center transition-all duration-300 ease-in-out min-h-screen`}
     >
-      <form className="w-full max-w-sm" onSubmit={handleSubmit}>
+      <form
+        className="w-full max-w-sm"
+        onSubmit={handleSubmit}
+        autoComplete="off"
+      >
         <div className="mb-4">
           <label
             className="block text-gray-700 text-sm font-bold mb-2"

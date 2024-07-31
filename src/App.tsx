@@ -6,7 +6,7 @@ import Dashboard from "./components/Dashboard";
 import AboutComponent from "./components/AboutComponent";
 import LoginComponent from "./components/LoginComponent";
 import Navbar from "./components/Navbar";
-import Footer from "./components/Footer"; // Import Footer component
+import Footer from "./components/Footer";
 
 function App() {
   const [sidebarToggle, setSidebarToggle] = useState(false);
