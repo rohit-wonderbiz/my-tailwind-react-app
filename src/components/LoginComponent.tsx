@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 
 interface NavbarProps {
   sidebarToggle: boolean;
@@ -9,13 +9,15 @@ const LoginComponent: React.FC<NavbarProps> = ({
   sidebarToggle,
   setSidebarToggle,
 }) => {
-  const [name, setName] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [gender, setGender] = useState("");
   const [education, setEducation] = useState("");
   const [languages, setLanguages] = useState<string[]>([]);
   const [errors, setErrors] = useState({
-    name: "",
+    firstName: "",
+    lastName: "",
     email: "",
     gender: "",
     education: "",
@@ -23,17 +25,67 @@ const LoginComponent: React.FC<NavbarProps> = ({
   });
   const [showPopup, setShowPopup] = useState(false);
 
+  const isAlphabetic = (value: string) => /^[A-Za-z]+$/.test(value);
+
+  const validateFirstName = (value: string) => {
+    let error = "";
+    if (!value) {
+      error = "First name is required.";
+    } else if (value.length < 3) {
+      error = "First name must be at least 3 characters.";
+    } else if (!isAlphabetic(value)) {
+      error = "First name must contain only alphabetic characters.";
+    }
+    setErrors((prevErrors) => ({ ...prevErrors, firstName: error }));
+  };
+
+  const validateLastName = (value: string) => {
+    let error = "";
+    if (!value) {
+      error = "Last name is required.";
+    } else if (value.length < 3) {
+      error = "Last name must be at least 3 characters.";
+    } else if (!isAlphabetic(value)) {
+      error = "Last name must contain only alphabetic characters.";
+    }
+    setErrors((prevErrors) => ({ ...prevErrors, lastName: error }));
+  };
+
+  const validateEmail = (value: string) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    let error = "";
+    if (!value || !emailRegex.test(value)) {
+      error = "Invalid email address.";
+    }
+    setErrors((prevErrors) => ({ ...prevErrors, email: error }));
+  };
+
   const validateForm = () => {
     let formErrors = {
-      name: "",
+      firstName: "",
+      lastName: "",
       email: "",
       gender: "",
       education: "",
       languages: "",
     };
 
-    if (!name) {
-      formErrors.name = "Name is required.";
+    if (!firstName) {
+      formErrors.firstName = "First name is required.";
+    } else if (firstName.length < 3) {
+      formErrors.firstName = "First name must be at least 3 characters.";
+    } else if (!isAlphabetic(firstName)) {
+      formErrors.firstName =
+        "First name must contain only alphabetic characters.";
+    }
+
+    if (!lastName) {
+      formErrors.lastName = "Last name is required.";
+    } else if (lastName.length < 3) {
+      formErrors.lastName = "Last name must be at least 3 characters.";
+    } else if (!isAlphabetic(lastName)) {
+      formErrors.lastName =
+        "Last name must contain only alphabetic characters.";
     }
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -62,7 +114,8 @@ const LoginComponent: React.FC<NavbarProps> = ({
     event.preventDefault();
     if (validateForm()) {
       alert("Form submitted successfully!");
-      console.log(name, gender, email, education, languages);
+      console.log(firstName, lastName, gender, email, education, languages);
+      setShowPopup(false);
     } else {
       setShowPopup(true);
     }
@@ -77,69 +130,82 @@ const LoginComponent: React.FC<NavbarProps> = ({
     );
   };
 
-  const validateName = () => {
-    if (!name) {
-      setErrors((prevErrors) => ({ ...prevErrors, name: "Name is required." }));
-    } else {
-      setErrors((prevErrors) => ({ ...prevErrors, name: "" }));
-    }
-  };
-
-  const validateEmail = () => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!email || !emailRegex.test(email)) {
-      setErrors((prevErrors) => ({
-        ...prevErrors,
-        email: "Invalid email address.",
-      }));
-    } else {
-      setErrors((prevErrors) => ({ ...prevErrors, email: "" }));
-    }
-  };
-
   const getInputBorderColor = (fieldValue: string, fieldError: string) => {
-    if (fieldError) return "border-red-500 border-2";
-    if (fieldValue) return "border-green-500 border-2";
-    return "border-gray-300 border-2";
+    if (fieldError) return "border-red-500";
+    if (fieldValue) return "border-green-500";
+    return "border-gray-300";
   };
 
   return (
     <div
       className={`${
-        sidebarToggle ? "ml-16" : "ml-32"
+        sidebarToggle ? "ml-8" : "ml-8"
       } mr-16 flex-1 flex items-center justify-center transition-all duration-300 ease-in-out min-h-screen`}
     >
-      <form className="w-full" onSubmit={handleSubmit} autoComplete="off">
-        <h1 className="text-center p-8 text-2xl font-bold text-blue-600 sm:text-3xl">
+      <form
+        className="w-full p-8 bg-gray-100 shadow-lg rounded-lg border-2"
+        onSubmit={handleSubmit}
+        autoComplete="off"
+      >
+        <h1 className="text-center text-2xl font-bold text-blue-600 sm:text-3xl mb-6">
           Employee Form
         </h1>
 
-        <div className="mb-4">
-          <label
-            className="block text-gray-700 text-sm font-bold mb-2"
-            htmlFor="name"
-          >
-            Name
-          </label>
-          <input
-            type="text"
-            id="name"
-            placeholder="Enter your Name"
-            value={name}
-            onChange={(e) => {
-              setName(e.target.value);
-              validateName();
-            }}
-            onBlur={validateName}
-            className={`shadow appearance-none border ${getInputBorderColor(
-              name,
-              errors.name
-            )} rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline`}
-          />
-          {errors.name && (
-            <p className="text-red-500 text-xs mt-2">{errors.name}</p>
-          )}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+          <div>
+            <label
+              className="block text-gray-700 text-sm font-bold mb-2"
+              htmlFor="firstName"
+            >
+              First Name
+            </label>
+            <input
+              type="text"
+              id="firstName"
+              placeholder="Enter your First Name"
+              value={firstName}
+              onChange={(e) => {
+                setFirstName(e.target.value);
+                validateFirstName(e.target.value);
+              }}
+              onBlur={(e) => validateFirstName(e.target.value)}
+              className={`shadow appearance-none border ${getInputBorderColor(
+                firstName,
+                errors.firstName
+              )} rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-600`}
+            />
+            {errors.firstName && (
+              <p className="text-red-500 text-xs mt-2">{errors.firstName}</p>
+            )}
+          </div>
+          <div>
+            <label
+              className="block text-gray-700 text-sm font-bold mb-2"
+              htmlFor="lastName"
+            >
+              Last Name
+            </label>
+            <input
+              type="text"
+              id="lastName"
+              placeholder="Enter your Last Name"
+              value={lastName}
+              onChange={(e) => {
+                setLastName(e.target.value);
+                validateLastName(e.target.value);
+              }}
+              onBlur={(e) => validateLastName(e.target.value)}
+              className={`shadow appearance-none border ${getInputBorderColor(
+                lastName,
+                errors.lastName
+              )} rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-600`}
+            />
+            {errors.lastName && (
+              <p className="text-red-500 text-xs mt-2">{errors.lastName}</p>
+            )}
+          </div>
         </div>
+
         <div className="mb-4">
           <label
             className="block text-gray-700 text-sm font-bold mb-2"
@@ -154,18 +220,19 @@ const LoginComponent: React.FC<NavbarProps> = ({
             value={email}
             onChange={(e) => {
               setEmail(e.target.value);
-              validateEmail();
+              validateEmail(e.target.value);
             }}
-            onBlur={validateEmail}
+            onBlur={(e) => validateEmail(e.target.value)}
             className={`shadow appearance-none border ${getInputBorderColor(
               email,
               errors.email
-            )} rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline`}
+            )} rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-600`}
           />
           {errors.email && (
             <p className="text-red-500 text-xs mt-2">{errors.email}</p>
           )}
         </div>
+
         <div className="mb-4">
           <label className="block text-gray-700 text-sm font-bold mb-2">
             Gender
@@ -173,8 +240,11 @@ const LoginComponent: React.FC<NavbarProps> = ({
           <div className="grid grid-cols-1 gap-4 text-center sm:grid-cols-3">
             <div>
               <label
-                className="block w-full cursor-pointer shadow rounded-lg border p-3 text-gray-800 hover:border-gray-800 has-[:checked]:border-blue-600 has-[:checked]:bg-blue-600 has-[:checked]:text-white"
-                tabIndex={0}
+                className={`block w-full cursor-pointer shadow rounded-lg border p-3 text-gray-800 hover:border-gray-800 ${
+                  gender === "male"
+                    ? "border-blue-600 bg-blue-600 text-white"
+                    : ""
+                }`}
               >
                 <input
                   className="sr-only"
@@ -190,8 +260,11 @@ const LoginComponent: React.FC<NavbarProps> = ({
 
             <div>
               <label
-                className="block w-full cursor-pointer shadow rounded-lg border p-3 text-gray-800 hover:border-gray-800 has-[:checked]:border-blue-600 has-[:checked]:bg-blue-600 has-[:checked]:text-white"
-                tabIndex={0}
+                className={`block w-full cursor-pointer shadow rounded-lg border p-3 text-gray-800 hover:border-gray-800 ${
+                  gender === "female"
+                    ? "border-blue-600 bg-blue-600 text-white"
+                    : ""
+                }`}
               >
                 <input
                   className="sr-only"
@@ -204,11 +277,31 @@ const LoginComponent: React.FC<NavbarProps> = ({
                 <span className="text-sm"> Female </span>
               </label>
             </div>
+            <div>
+              <label
+                className={`block w-full cursor-pointer shadow rounded-lg border p-3 text-gray-800 hover:border-gray-800 ${
+                  gender === "other"
+                    ? "border-blue-600 bg-blue-600 text-white"
+                    : ""
+                }`}
+              >
+                <input
+                  className="sr-only"
+                  type="radio"
+                  name="gender"
+                  value="other"
+                  checked={gender === "other"}
+                  onChange={(e) => setGender(e.target.value)}
+                />
+                <span className="text-sm"> Other </span>
+              </label>
+            </div>
           </div>
           {errors.gender && (
             <p className="text-red-500 text-xs mt-2">{errors.gender}</p>
           )}
         </div>
+
         <div className="mb-4">
           <label
             className="block text-gray-700 text-sm font-bold mb-2"
@@ -223,7 +316,7 @@ const LoginComponent: React.FC<NavbarProps> = ({
             className={`shadow border ${getInputBorderColor(
               education,
               errors.education
-            )} rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline`}
+            )} rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-600`}
           >
             <option value="">Select</option>
             <option value="hsc">HSC</option>
@@ -233,6 +326,7 @@ const LoginComponent: React.FC<NavbarProps> = ({
             <p className="text-red-500 text-xs mt-2">{errors.education}</p>
           )}
         </div>
+
         <div className="mb-4">
           <label className="block text-gray-700 text-sm font-bold mb-2">
             Languages
@@ -276,10 +370,11 @@ const LoginComponent: React.FC<NavbarProps> = ({
             <p className="text-red-500 text-xs mt-2">{errors.languages}</p>
           )}
         </div>
+
         <div className="flex items-center justify-center">
           <button
             type="submit"
-            className="bg-blue-700 hover:bg-blue-900 text-white font-bold py-3 px-8 rounded focus:outline-none focus:shadow-outline"
+            className="bg-blue-700 hover:bg-blue-900 text-white font-bold py-3 px-8 rounded focus:outline-none focus:shadow-outline transition duration-200"
           >
             Submit
           </button>
@@ -287,15 +382,10 @@ const LoginComponent: React.FC<NavbarProps> = ({
       </form>
 
       {showPopup && (
-        <aside className="fixed top-4 right-4 z-50 flex items-center justify-center gap-4 rounded-lg bg-red-600 px-5 py-3 text-white">
-          <a
-            href="#"
-            target="_blank"
-            rel="noreferrer"
-            className="text-sm font-medium hover:opacity-75"
-          >
+        <aside className="fixed top-10 right-4 z-50 flex items-center justify-center gap-4 rounded-lg bg-red-600 px-5 py-3 text-white">
+          <span className="text-sm font-medium">
             All fields need to be filled
-          </a>
+          </span>
 
           <button
             className="rounded bg-white/20 p-1 hover:bg-white/10"

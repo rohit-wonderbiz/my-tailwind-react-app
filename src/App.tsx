@@ -39,9 +39,9 @@ function App() {
         <div className="flex flex-1">
           <Sidebar sidebarToggle={sidebarToggle} />
           <div
-            className={`flex-1 ml-${
-              sidebarToggle ? "16" : "64"
-            } transition-all duration-300`}
+            className={`flex-1 transition-all duration-300 ${
+              sidebarToggle ? "ml-8" : "ml-8"
+            }`}
           >
             <Routes>
               <Route
